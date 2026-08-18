@@ -2,19 +2,47 @@ import { SearchBar } from "./components/SearchBar";
 import { RepoList } from "./components/RepoList";
 import { useState } from "react";
 //Mock data de prueba
-const mockRepo = {
-  id: 1,
-  name: "react",
-  owner: {
-    login: "facebook",
-    avatar_url: "https://avatars.githubusercontent.com/u/69631?v=4",
+const mockRepos = [
+  {
+    id: 1,
+    name: "react",
+    owner: {
+      login: "facebook",
+      avatar_url: "https://avatars.githubusercontent.com/u/69631?v=4",
+    },
+    html_url: "https://github.com/facebook/react",
+    description: "The library for web and native user interfaces.",
+    stargazers_count: 228000,
+    language: "JavaScript",
+    updated_at: "2026-08-15T10:00:00Z",
   },
-  html_url: "https://github.com/facebook/react",
-  description: "The library for web and native user interfaces.",
-  stargazers_count: 228000,
-  language: "JavaScript",
-  updated_at: "2026-08-15T10:00:00Z",
-};
+  {
+    id: 2,
+    name: "vite",
+    owner: {
+      login: "vitejs",
+      avatar_url: "https://avatars.githubusercontent.com/u/65625612?v=4",
+    },
+    html_url: "https://github.com/vitejs/vite",
+    description: "Next Generation Frontend Tooling. It's fast!",
+    stargazers_count: 68000,
+    language: "TypeScript",
+    updated_at: "2026-08-16T12:30:00Z",
+  },
+  {
+    id: 3,
+    name: "tailwindcss",
+    owner: {
+      login: "tailwindlabs",
+      avatar_url: "https://avatars.githubusercontent.com/u/67109815?v=4",
+    },
+    html_url: "https://github.com/tailwindlabs/tailwindcss",
+    description: "A utility-first CSS framework for rapid UI development.",
+    stargazers_count: 81000,
+    language: "CSS",
+    updated_at: "2026-08-14T18:20:00Z",
+  },
+];
 function App() {
   const [query, setQuery] = useState("");
   return (
@@ -31,7 +59,7 @@ function App() {
         </header>
         <main className="space-y-6">
           <SearchBar query={query} onQueryChange={setQuery} />
-          <RepoList repo={mockRepo} />
+          <RepoList repos={mockRepos} />
         </main>
       </div>
     </div>
