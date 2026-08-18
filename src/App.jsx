@@ -1,6 +1,20 @@
 import { SearchBar } from "./components/SearchBar";
 import { RepoList } from "./components/RepoList";
 import { useState } from "react";
+//Mock data de prueba
+const mockRepo = {
+  id: 1,
+  name: "react",
+  owner: {
+    login: "facebook",
+    avatar_url: "https://avatars.githubusercontent.com/u/69631?v=4",
+  },
+  html_url: "https://github.com/facebook/react",
+  description: "The library for web and native user interfaces.",
+  stargazers_count: 228000,
+  language: "JavaScript",
+  updated_at: "2026-08-15T10:00:00Z",
+};
 function App() {
   const [query, setQuery] = useState("");
   return (
@@ -17,7 +31,7 @@ function App() {
         </header>
         <main className="space-y-6">
           <SearchBar query={query} onQueryChange={setQuery} />
-          <RepoList />
+          <RepoList repo={mockRepo} />
         </main>
       </div>
     </div>
