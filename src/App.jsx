@@ -1,6 +1,8 @@
 import { SearchBar } from "./components/SearchBar";
 import { RepoList } from "./components/RepoList";
+import { useState } from "react";
 function App() {
+  const [query, setQuery] = useState("");
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -14,7 +16,7 @@ function App() {
           </p>
         </header>
         <main className="space-y-6">
-          <SearchBar />
+          <SearchBar query={query} onQueryChange={setQuery} />
           <RepoList />
         </main>
       </div>
