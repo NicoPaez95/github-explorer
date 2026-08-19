@@ -1,50 +1,42 @@
 import { SearchBar } from "./components/SearchBar";
 import { RepoList } from "./components/RepoList";
-import { useState } from "react";
-//Mock data de prueba
-const mockRepos = [
-  {
-    id: 1,
-    name: "react",
-    owner: {
-      login: "facebook",
-      avatar_url: "https://avatars.githubusercontent.com/u/69631?v=4",
-    },
-    html_url: "https://github.com/facebook/react",
-    description: "The library for web and native user interfaces.",
-    stargazers_count: 228000,
-    language: "JavaScript",
-    updated_at: "2026-08-15T10:00:00Z",
-  },
-  {
-    id: 2,
-    name: "vite",
-    owner: {
-      login: "vitejs",
-      avatar_url: "https://avatars.githubusercontent.com/u/65625612?v=4",
-    },
-    html_url: "https://github.com/vitejs/vite",
-    description: "Next Generation Frontend Tooling. It's fast!",
-    stargazers_count: 68000,
-    language: "TypeScript",
-    updated_at: "2026-08-16T12:30:00Z",
-  },
-  {
-    id: 3,
-    name: "tailwindcss",
-    owner: {
-      login: "tailwindlabs",
-      avatar_url: "https://avatars.githubusercontent.com/u/67109815?v=4",
-    },
-    html_url: "https://github.com/tailwindlabs/tailwindcss",
-    description: "A utility-first CSS framework for rapid UI development.",
-    stargazers_count: 81000,
-    language: "CSS",
-    updated_at: "2026-08-14T18:20:00Z",
-  },
-];
+import { useEffect, useState } from "react";
 function App() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("react");
+  const [repos, setRepos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const cleanQuery = query.trim();
+    if (!cleanQuery) {
+      setRepos([]);
+      return;
+    }
+    const fetchRepos = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `https://api.github.com/search/repositories?q=${encodeURIComponent(cleanQuery)}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`GitHub API Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setRepos(data.items || []);
+      } catch (err) {
+        setError(err.message || "Error fetching repositories");
+        setRepos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRepos();
+  }, [query]);
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -59,7 +51,18 @@ function App() {
         </header>
         <main className="space-y-6">
           <SearchBar query={query} onQueryChange={setQuery} />
-          <RepoList repos={mockRepos} />
+          {error && (
+            <div className="rounded-xl border border-red-800/50 bg-red-950/30 p-4 text-center text-red-400">
+              <p>{error}</p>
+            </div>
+          )}
+          {loading ? (
+            <div className="py-12 text-center text-slate-400">
+              <p className="animate-pulse">Loading repositories...</p>
+            </div>
+          ) : (
+            <RepoList repos={repos} />
+          )}
         </main>
       </div>
     </div>
