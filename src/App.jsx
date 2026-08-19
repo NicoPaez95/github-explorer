@@ -1,14 +1,15 @@
 import { SearchBar } from "./components/SearchBar";
 import { RepoList } from "./components/RepoList";
 import { useEffect, useState } from "react";
+import { useDebounce } from "./hooks/useDebounce";
 function App() {
   const [query, setQuery] = useState("react");
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const debouncedQuery = useDebounce(query, 500);
   useEffect(() => {
-    const cleanQuery = query.trim();
+    const cleanQuery = debouncedQuery.trim();
     if (!cleanQuery) {
       setRepos([]);
       return;
@@ -35,7 +36,7 @@ function App() {
       }
     };
     fetchRepos();
-  }, [query]);
+  }, [debouncedQuery]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
