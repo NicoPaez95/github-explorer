@@ -13,6 +13,7 @@ function App() {
     const cleanQuery = debouncedQuery.trim();
     if (!cleanQuery) {
       setRepos([]);
+      setError(null);
       return;
     }
     const fetchRepos = async () => {
@@ -23,8 +24,15 @@ function App() {
         const response = await fetch(
           `https://api.github.com/search/repositories?q=${encodeURIComponent(cleanQuery)}`
         );
-
         if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error("API rate limit exceeded. Please try again later.");
+          }
+
+          if (response.status >= 500) {
+            throw new Error("GitHub servers are down. Please try again later.");
+          }
+
           throw new Error(`GitHub API Error: ${response.status}`);
         }
         const data = await response.json();
@@ -54,12 +62,15 @@ function App() {
         <main className="space-y-6">
           <SearchBar query={query} onQueryChange={setQuery} />
           {error && (
-            <div className="rounded-xl border border-red-800/50 bg-red-950/30 p-4 text-center text-red-400">
-              <p>{error}</p>
+            <div className="mx-auto my-6 max-w-2xl rounded-xl border border-red-800/50 bg-red-950/30 p-4 text-center text-red-400">
+              <p className="font-medium">{error}</p>
             </div>
           )}
-
-          {loading ? <LoadingSpinner /> : <RepoList repos={repos} />}
+          {loading ? (
+            <LoadingSpinner />
+          ) : (
+            !error && <RepoList repos={repos} query={query.trim()} />
+          )}
         </main>
       </div>
     </div>

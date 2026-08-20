@@ -1,6 +1,9 @@
 import { RepoCard } from "./RepoCard";
-const RepoList = ({ repos = [] }) => {
-  if (!repos || repos.lenght === 0) {
+const RepoList = ({ repos = [], query = "" }) => {
+  if (!query) {
+    return null;
+  }
+  if (!repos || repos.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-800 p-8 text-center text-slate-400">
         <p className="text-base font-medium">No repositories found</p>
