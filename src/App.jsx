@@ -1,9 +1,10 @@
 import { SearchBar } from "./components/SearchBar";
 import { RepoList } from "./components/RepoList";
+import { LoadingSpinner } from "./components/LoadingSpinner";
 import { useEffect, useState } from "react";
 import { useDebounce } from "./hooks/useDebounce";
 function App() {
-  const [query, setQuery] = useState("react");
+  const [query, setQuery] = useState("");
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -57,13 +58,8 @@ function App() {
               <p>{error}</p>
             </div>
           )}
-          {loading ? (
-            <div className="py-12 text-center text-slate-400">
-              <p className="animate-pulse">Loading repositories...</p>
-            </div>
-          ) : (
-            <RepoList repos={repos} />
-          )}
+
+          {loading ? <LoadingSpinner /> : <RepoList repos={repos} />}
         </main>
       </div>
     </div>
